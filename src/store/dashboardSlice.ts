@@ -7,6 +7,7 @@ interface DashboardModel {
 }
 
 interface UserModel {
+    id: string;
     email: string;
     photoUrl?: string;
     name?: string;
@@ -18,6 +19,7 @@ const initialStateUser: UserModel = {
     name: "",
     photoUrl: "",
     access_data: "",
+    id: ''
 }
 
 const initialDashboardModel: DashboardModel = {
@@ -37,7 +39,9 @@ const dashboardSlice = createSlice({
             state.user = {
                 email: "",
                 name: "",
-                photoUrl: ""
+                photoUrl: "",
+                id: '',
+                access_data: ''
             };
             state.isAuthenticate = false;
             localStorage.setItem('megafacil', JSON.stringify(state));
@@ -47,6 +51,7 @@ const dashboardSlice = createSlice({
             localStorage.setItem('megafacil', JSON.stringify(state));
         },
         login: (state, action) => {
+            console.log(action.payload)
             state.user = action.payload;
             state.isAuthenticate = true;
             localStorage.setItem('megafacil', JSON.stringify(state));

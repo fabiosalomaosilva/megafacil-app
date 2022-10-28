@@ -21,7 +21,7 @@ export default function InputText(props: InputTextProps) {
     }
 
     return (
-        <div className={`my-4 ${cols}`}>
+        <div className={`my-2 ${cols}`}>
             <div className='h-4 flex flex-row mb-2 gap-1'>
                 <label
                     htmlFor={props.id}
@@ -34,7 +34,7 @@ export default function InputText(props: InputTextProps) {
                 )}
             </div>
             <input
-                className={`w-full border-[1px] ${border} px-3 py-2 rounded-md text-md outline-none active:outline-none focus:border-gray-400`}
+                className={`w-full border-[1px] ${border} px-3 py-2 rounded-md text-md outline-none active:outline-none focus:border-teal-300 focus:ring-2 focus:ring-teal-100`}
                 {...props}
             />
             {props.error && props.touched ? (
