@@ -6,7 +6,6 @@ export default function LoginSocialSuccess() {
         <img src={logo} width="250" height="80" />
       </p>
       <br />
-
       <h1 className="text-white text-2xl">Login realizado com sucesso!!</h1>
     </div>
   );

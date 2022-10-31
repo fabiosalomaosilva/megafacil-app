@@ -41,7 +41,7 @@ export function Login() {
                     <InputText label="E-mail" />
                     <InputText label="Senha" type="password" />
                     <Link className="self-end text-teal-600 -mt-2 font-semibold" to="/dashboard">Esqueci a senha</Link>
-                    <Button type="button" onClick={handleLogin} cssClass="my-4">ENTRAR</Button>
+                    <Button type="button" onClick={handleLogin} cssclass="my-4">ENTRAR</Button>
                     <p className="text-center text-gray-500 mb-4">
                         <span className="tracking-[-5px] mx-2">----------------------</span>
                         ou use um serviço

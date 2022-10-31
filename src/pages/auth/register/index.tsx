@@ -1,76 +1,139 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, redirect, useNavigate } from "react-router-dom";
 import InputText from "../../../components/InputText";
 import { RootState } from "../../../store";
-import { login } from "../../../store/dashboardSlice";
+import { login, setDataRegisterWithoutSave } from "../../../store/dashboardSlice";
 import logo from '../../../assets/logo-hor.png';
 import logoBranco from '../../../assets/logo-branco.png';
 import Button from "../../../components/Button";
 import GoogleButton from "../../../components/GoogleButton";
 import FacebookButton from "../../../components/FacebookButton";
 import { api } from "../../../api/axios";
+import { RegisterUserModel } from "../../../store/models/RegisterUserModel";
+import { UserModel } from "../../../store/models/UserModel";
 
 export function Register() {
-    const nome = useSelector((state: RootState) => state.dashboard.user)
-    const dispatch = useDispatch();
-    let navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.dashboard.user)
+  const [userRegister, setUserRegister] = useState<RegisterUserModel>({
+    email: '',
+    id: '',
+    name: '',
+    photoUrl: '',
+    provider: 'EmailPassword',
+    password: '',
+    confirmPassword: '',
+  });
+  const [userLogin, setUserLogin] = useState<UserModel>();
+  const dispatch = useDispatch();
+  let navigate = useNavigate();
 
-    const handleLogin = () => {
-        dispatch(login({ email: 'fabio@arquivarnet.com.br', nameUser: 'Fábio Salomão' }));
-        navigate('/dashboard');
+  const handleLogin = () => {
+    dispatch(login({ email: 'fabio@arquivarnet.com.br', nameUser: 'Fábio Salomão' }));
+    navigate('/dashboard');
+  }
+
+  const loginGoogle = async () => {
+    let timer: NodeJS.Timeout | null = null;
+    const googleLoginURL = "http://localhost:3300/auth/google";
+    const loginGoogleModal = window.open(
+      googleLoginURL,
+      "_blank",
+      "width=500,height=600"
+    );
+
+    if (loginGoogleModal) {
+      console.log(loginGoogleModal.location.href)
+      timer = setInterval(() => {
+        if (loginGoogleModal.location.href == 'http://localhost:5173/auth/loginsocialsuccess') {
+          getUser();
+          loginGoogleModal.close();
+          if (timer) clearInterval(timer);
+        }
+      }, 500);
+    };
+  };
+
+  const getUser = async () => {
+    const { data } = await api.get<UserModel>('auth/success', { withCredentials: true });
+    const userRegisterData: RegisterUserModel = {
+      email: data.email === undefined ? '' : data.email,
+      id: data.id === undefined ? '' : data.id,
+      name: data.name === undefined ? '' : data.name,
+      photoUrl: data.photoUrl === undefined ? '' : data.photoUrl,
+      provider: "Google",
+      password: '',
+      confirmPassword: '',
     }
+    setUserLogin(data);
+    setUserRegister(userRegisterData)
+    dispatch(setDataRegisterWithoutSave(userRegister))
+  };
 
+  const setRegister = async () => {
+    try {
+      if (userRegister?.password === userRegister?.confirmPassword) {
+        const response = await api.post('auth/register', userRegister);
+        if (response.status === 200) {
+          dispatch(login(userLogin));
+        }
+      }
+    } catch ({ response }) {
+      alert(response?.data?.error)
+    }
+  }
 
-    const redirectToGoogleSSO = async () => {
-        let timer: NodeJS.Timeout | null = null;
-        const googleLoginURL = "http://localhost:3300/auth/google";
-        const newWindow = window.open(
-            googleLoginURL,
-            "_blank",
-            "width=500,height=600"
-        );
+  return (
+    <div className="h-screen w-full flex justify-center items-center bg-bgLogin" >
+      <div className="min-w-[20rem] w-[20rem] sm:w-[30rem] rounded-lg shadow-xl flex flex-row relative" >
+        <div className="sm:w-[30rem] w-[20rem] bg-white p-10 rounded-lg sm:rounded-r-lg z-50 flex flex-col">
+          <img src={logo} width="180" className="mb-4 sm:hidden flex self-center" />
+          <div className="flex flex-row justify-between">
+            <h2 className="text-gray-500">Cadastre-se</h2>
+            {userRegister?.photoUrl !== '' ?
+              (<img src={userRegister.photoUrl} width="45" height="45" className="rounded-full" />) : (<></>)
+            }
+          </div>
 
-        if (newWindow) {
-            timer = setInterval(() => {
-                if (newWindow.location.href == 'http://localhost:5173/auth/loginsocialsuccess') {
-                    console.log('Entrou aqui')
-                    getUser();
-                    newWindow.close();
-                    if (timer) clearInterval(timer);
-                }
-            }, 500);
+          <InputText
+            label="Nome completo"
+            value={userRegister?.name}
+            onChange={(e) => setUserRegister({ ...userRegister, name: e.target.value })}
+            disabled={userRegister?.provider !== "EmailPassword"}
+          />
+          <InputText
+            label="E-mail"
+            type="email"
+            value={userRegister?.email}
+            onChange={(e) => setUserRegister({ ...userRegister, email: e.target.value })}
+            disabled={userRegister?.provider !== "EmailPassword"}
+          />
+          <InputText
+            label="Senha"
+            type="password"
+            value={userRegister?.password}
+            onChange={(e) => setUserRegister({ ...userRegister, password: e.target.value })} />
 
-        };
-    };
-    const getUser = async () => {
-        const response = await api.get('auth/success', { withCredentials: true });
-        dispatch(login(response.data))
-    };
-    // useEffect(() => {
-    //     getUser();
-    // }, [])
+          <InputText
+            label="Confirmar a senha"
+            type="password"
+            value={userRegister?.confirmPassword}
+            onChange={(e) => setUserRegister({ ...userRegister, confirmPassword: e.target.value })} />
 
-    return (
-        <div className="h-screen w-full flex justify-center items-center bg-bgLogin" >
-            <div className="min-w-[20rem] w-[20rem] sm:w-[30rem] rounded-lg shadow-xl flex flex-row relative" >
-                <div className="sm:w-[30rem] w-[20rem] bg-white p-10 rounded-lg sm:rounded-r-lg z-50 flex flex-col">
-                    <img src={logo} width="180" className="mb-4 sm:hidden flex self-center" />
-                    <h2 className="text-gray-500">Cadastre-se</h2>
-                    <InputText label="Nome completo" />
-                    <InputText label="E-mail" type="email" />
-                    <InputText label="Senha" type="password" />
-                    <InputText label="Confirmar a senha" type="password" />
-                    <Button type="button" onClick={redirectToGoogleSSO} cssClass="my-4">SALVAR</Button>
-                    <p className="text-center text-gray-500 mb-4">
-                        <span className="tracking-[-5px] mx-2">----------------------</span>
-                        ou use um serviço
-                        <span className="tracking-[-5px] mx-2">----------------------</span></p>
-                    <div className="flex justify-between">
-                        <GoogleButton />
-                        <FacebookButton />
-                    </div>
-                </div>
-            </div>
+          <Button type="button" onClick={setRegister} cssclass="my-4">SALVAR</Button>
+
+          <p className="text-center text-gray-500 mb-4">
+            <span className="tracking-[-5px] mx-2">----------------------</span>
+            ou use um serviço
+            <span className="tracking-[-5px] mx-2">----------------------</span>
+          </p>
+          <div className="flex justify-between">
+            <GoogleButton onClick={loginGoogle} />
+            <FacebookButton />
+          </div>
         </div>
-    )
-} 
+      </div>
+    </div>
+  )
+
+}

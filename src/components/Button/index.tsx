@@ -4,7 +4,7 @@ import Tooltip from "../Tooltip";
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
     size?: 'sm' | 'lg';
     color?: 'primary' | 'secondary' | 'danger' | 'warning';
-    cssClass?: string;
+    cssclass?: string;
 }
 
 export default function Button(props: ButtonProps) {
@@ -38,7 +38,7 @@ export default function Button(props: ButtonProps) {
             textClass += ' bg-primary text-white hover:bg-primaryLight';
             break;
     }
-    const total = `${props.className} ${textClass} outline-none rounded-full hover:scale-[0.98] transition-all ease-in-out ${props.cssClass}`;
+    const total = `${props.className} ${textClass} outline-none rounded-full hover:scale-[0.98] transition-all ease-in-out ${props.cssclass}`;
     return (
         <button
             className={total}

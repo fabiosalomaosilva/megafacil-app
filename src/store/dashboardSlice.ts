@@ -1,18 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-interface DashboardModel {
-    toggleSideBar: boolean;
-    isAuthenticate: boolean;
-    user: UserModel;
-}
-
-interface UserModel {
-    id: string;
-    email: string;
-    photoUrl?: string;
-    name?: string;
-    access_data?: string;
-}
+import { DashboardModel } from "./models/DashboardModel";
+import { UserModel } from "./models/UserModel";
 
 const initialStateUser: UserModel = {
     email: "",
@@ -56,6 +44,12 @@ const dashboardSlice = createSlice({
             state.isAuthenticate = true;
             localStorage.setItem('megafacil', JSON.stringify(state));
         },
+        setDataRegisterWithoutSave: (state, action) => {
+            console.log(action.payload)
+            state.user = action.payload;
+            state.isAuthenticate = false;
+            localStorage.setItem('megafacil', JSON.stringify(state));
+        },
     },
 });
 
@@ -63,5 +57,6 @@ export const {
     setToggleSideBar,
     login,
     logout,
+    setDataRegisterWithoutSave,
 } = dashboardSlice.actions;
 export default dashboardSlice.reducer;
