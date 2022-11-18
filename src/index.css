@@ -13,8 +13,10 @@ html {
   left: 0;
   right: 0;
   bottom: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
-
 h1 {
   @apply text-4xl;
   @apply text-gray-900 font-semibold;

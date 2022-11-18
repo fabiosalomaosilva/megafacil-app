@@ -3,25 +3,29 @@ import logo from '../../assets/logo-hor.png';
 import icone from '../../assets/logo.png';
 import { RootState } from '../../store';
 import { setToggleSideBar } from '../../store/dashboardSlice';
-import { MdMenu } from "react-icons/md";
+import Avatar, { ItemDropDownAvatar } from '../Avatar';
+import logoBranco from '../../assets/logo-branco-hor.png';
 
-export interface HeaderProps {
-    children?: React.ReactNode;
-}
 
-export default function Header(props: HeaderProps) {
-    const dispatch = useDispatch();
-    return (
-        <div className="sticky z-10 top-0 h-16 border-b bg-white py-2 w-full">
-            <div className="px-3 flex flex-row items-center md:justify-between space-x-4 2xl:container">
-                <button className="p-2 rounded-lg h-12 w-12 hover:bg-slate-100 active:bg-slate-200 transition-all ease-in-out" onClick={() => dispatch(setToggleSideBar())}>
-                    <MdMenu className="h-8 w-8" />
-                </button>
-                <img src={logo} width="130" className="md:hidden sm:hidden flex" />
-                <img src={icone} width="40" className="rounded-t-full md:flex sm:flex hidden" />
+export default function Header() {
+  const user = useSelector((state: RootState) => state.dashboard.user)
+  const dispatch = useDispatch();
+  const linksAvatar: ItemDropDownAvatar[] = [
+    { title: 'Dashboard', route: '/dashboard' },
+    { title: 'Resultados', route: '/resultados' },
+    { title: 'Sair', route: '/auth/login' },
 
-                {props.children}
-            </div>
+  ]
+  return (
+    <header className="z-200 fixed h-[60px] md:pl-[250px] bg-bgLogin w-full">
+      <div className="flex flex-row h-[60px] pr-3 items-center md:justify-between space-x-4 z-201  p-0">
+        {/* <img src={logo} width="130" className="flex" /> */}
+        <div></div>
+        <div className="flex flex-row h-[60px] items-center">
+          <span className="font-semibold text-secondary mr-3">{user.name}</span>
+          <Avatar url={user?.photoUrl} size={40} itens={linksAvatar} />
         </div>
-    );
+      </div>
+    </header>
+  );
 }

@@ -10,28 +10,22 @@ import Button from "../../../components/Button";
 import GoogleButton from "../../../components/GoogleButton";
 import FacebookButton from "../../../components/FacebookButton";
 import { api } from "../../../api/axios";
-import { RegisterUserModel } from "../../../store/models/RegisterUserModel";
-import { UserModel } from "../../../store/models/UserModel";
+import { RegisterUserModel } from "../../../models/RegisterUserModel";
+import { UserModel } from "../../../models/UserModel";
 
 export function Register() {
   const user = useSelector((state: RootState) => state.dashboard.user)
   const [userRegister, setUserRegister] = useState<RegisterUserModel>({
     email: '',
-    id: '',
+    userId: '',
     name: '',
     photoUrl: '',
     provider: 'EmailPassword',
     password: '',
     confirmPassword: '',
   });
-  const [userLogin, setUserLogin] = useState<UserModel>();
   const dispatch = useDispatch();
   let navigate = useNavigate();
-
-  const handleLogin = () => {
-    dispatch(login({ email: 'fabio@arquivarnet.com.br', nameUser: 'Fábio Salomão' }));
-    navigate('/dashboard');
-  }
 
   const loginGoogle = async () => {
     let timer: NodeJS.Timeout | null = null;
@@ -43,10 +37,9 @@ export function Register() {
     );
 
     if (loginGoogleModal) {
-      console.log(loginGoogleModal.location.href)
       timer = setInterval(() => {
-        if (loginGoogleModal.location.href == 'http://localhost:5173/auth/loginsocialsuccess') {
-          getUser();
+        if (loginGoogleModal) {
+          getUserGoogle();
           loginGoogleModal.close();
           if (timer) clearInterval(timer);
         }
@@ -54,18 +47,17 @@ export function Register() {
     };
   };
 
-  const getUser = async () => {
+  const getUserGoogle = async () => {
     const { data } = await api.get<UserModel>('auth/success', { withCredentials: true });
     const userRegisterData: RegisterUserModel = {
-      email: data.email === undefined ? '' : data.email,
-      id: data.id === undefined ? '' : data.id,
-      name: data.name === undefined ? '' : data.name,
-      photoUrl: data.photoUrl === undefined ? '' : data.photoUrl,
-      provider: "Google",
+      email: data.email ?? '',
+      userId: data.userId ?? '',
+      name: data.name ?? '',
+      photoUrl: data.photoUrl ?? '',
+      provider: 'Google',
       password: '',
       confirmPassword: '',
     }
-    setUserLogin(data);
     setUserRegister(userRegisterData)
     dispatch(setDataRegisterWithoutSave(userRegister))
   };
@@ -75,11 +67,12 @@ export function Register() {
       if (userRegister?.password === userRegister?.confirmPassword) {
         const response = await api.post('auth/register', userRegister);
         if (response.status === 200) {
-          dispatch(login(userLogin));
+          //dispatch(login(userLogin));
+          navigate('/auth/successregister');
         }
       }
-    } catch ({ response }) {
-      alert(response?.data?.error)
+    } catch (error: any) {
+      alert(error?.response?.data?.error)
     }
   }
 
@@ -91,7 +84,7 @@ export function Register() {
           <div className="flex flex-row justify-between">
             <h2 className="text-gray-500">Cadastre-se</h2>
             {userRegister?.photoUrl !== '' ?
-              (<img src={userRegister.photoUrl} width="45" height="45" className="rounded-full" />) : (<></>)
+              (<img src={userRegister.photoUrl} width="45" height="45" className="rounded-full" referrerPolicy="no-referrer" />) : (<></>)
             }
           </div>
 
@@ -127,10 +120,11 @@ export function Register() {
             ou use um serviço
             <span className="tracking-[-5px] mx-2">----------------------</span>
           </p>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-4">
             <GoogleButton onClick={loginGoogle} />
             <FacebookButton />
           </div>
+          <Link to="/auth/login" className="text-teal-600 mt-4 font-semibold">Retornar ao login</Link>
         </div>
       </div>
     </div>

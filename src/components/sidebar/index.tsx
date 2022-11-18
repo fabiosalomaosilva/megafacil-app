@@ -2,7 +2,9 @@ import { useSelector } from 'react-redux';
 import logo from '../../assets/logo-branco-hor.png';
 import logoBranco from '../../assets/logo-branco.png';
 import { RootState } from '../../store';
-
+import { MdMenu } from "react-icons/md";
+import { RiDashboardFill, RiBarChart2Fill, RiDoorClosedFill } from "react-icons/ri"
+import SideBarItem from '../SideBarItem';
 
 export interface SidebarLayoutProps {
   children?: React.ReactNode;
@@ -12,16 +14,18 @@ export default function Sidebar(props: SidebarLayoutProps) {
   const dashboard = useSelector((state: RootState) => state.dashboard)
 
   return (
-    <div className={`top-0 right-0 h-full bg-primary flex flex-row items-left ease-in-out duration-300 ${dashboard.toggleSideBar
-      ? "min-w-[250px] max-w-[250px] z-10"
-      : "min-w-[1px] max-w-[1px] sm:min-w-[70px] sm:max-w-[70px] z-0"
-      }`}
-    >
-      <div className="h-16 w-full bg-teal-600 flex justify-center items-center">
-        {dashboard.toggleSideBar ?
-          (<img src={logo} className="sm:flexhidden sm:object-contain sm:w-[145px] ease-in-out duration-300" />) :
-          (<img src={logoBranco} className="sm:flex hidden sm:object-contain sm:w-[60px] sm:h-[60px] ease-in-out duration-300" />)
-        }
+    <div className="w-[220px] bg-primary h-full flex flex-col">
+      <div className="top-0 py-2 w-[220px] flex flex-col items-center justify-center">
+        <img src={logoBranco} className="object-contain w-[120px]" />
+      </div>
+      <div className="w-full h-full grid content-between gap-2">
+        <div>
+          <SideBarItem href="/dashboard" text="Home" icon={<RiDashboardFill className="h-6 w-6" />} />
+          <SideBarItem href="/resultados" text="Resultados" icon={<RiBarChart2Fill className="h-6 w-6" />} />
+        </div>
+        <div>
+          <SideBarItem href="/auth/login" text="Sair" icon={<RiDoorClosedFill className="h-6 w-6" />} />
+        </div>
       </div>
     </div>
   );

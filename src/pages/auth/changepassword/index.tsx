@@ -1,5 +1,5 @@
-import logo from '../../assets/logo-hor.png';
-export default function LoginSocialSuccess() {
+import logo from '../../../assets/logo-hor.png';
+export default function ChangePassword() {
   return (
     <div className="w-full h-screen bg-gray-800 flex items-center justify-center">
       <p className="text-center mb-8">

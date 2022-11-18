@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 
 export interface RegisterUserModel {
-  id: string;
+  userId: string;
   email: string;
   photoUrl: string;
   name: string;
