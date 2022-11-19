@@ -1,27 +1,39 @@
+import { DezenaRepeticoes } from './../models/DezenaRepeticoes';
+import { getResultados, getNumerosMaisRepetidos, getNumerosRepeticoes } from './../services/resultadoService';
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
+import { Resultado } from '../models/Resultado'
 
 interface ResultadosState {
-    value: number
+  resultados: Resultado[],
+  repeticoes: DezenaRepeticoes[]
 }
 
-const initialState = { value: 0 } as ResultadosState
+const initialStateResultados: Resultado[] = [];
+
+const local = JSON.parse(localStorage.getItem('megafacil:res') as string);
+const initialState: Resultado[] = local !== null && local !== '' ? local : initialStateResultados;
+
+
+const getResultadosService = async () => {
+  const resultados = await getResultados(30);
+  localStorage.setItem('megafacil:res', JSON.stringify(resultados));
+}
 
 const resultadosSlice = createSlice({
-    name: 'resultados',
-    initialState,
-    reducers: {
-        increment(state) {
-            state.value++
-        },
-        decrement(state) {
-            state.value--
-        },
-        incrementByAmount(state, action: PayloadAction<number>) {
-            state.value += action.payload
-        },
+  name: 'resultados',
+  initialState: {
+    resultados: initialState,
+    repeticoes: []
+  } as ResultadosState,
+  reducers: {
+    getResultadosSorteio(state) {
+      getResultadosService();
+      state.repeticoes = getNumerosRepeticoes(state.resultados);
+
     },
+  },
 })
 
-export const { increment, decrement, incrementByAmount } = resultadosSlice.actions
+export const { getResultadosSorteio } = resultadosSlice.actions
 export default resultadosSlice.reducer

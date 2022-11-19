@@ -11,10 +11,10 @@ export default function DashboardLayout() {
     <div className="flex flex-col h-screen w-full">
       <Header />
       <div className="flex flex-row h-full w-full">
-        <div className="fixed h-full">
+        <div className="sm:fixed h-full sm:block hidden">
           <Sidebar />
         </div>
-        <div className="md:ml-[220px] mt-[60px] bg-bgLogin w-full px-8 py-2">
+        <div className="sm:ml-[220px] sm:mt-[60px] bg-bgLogin w-full px-8 py-2">
           <Outlet />
         </div>
 

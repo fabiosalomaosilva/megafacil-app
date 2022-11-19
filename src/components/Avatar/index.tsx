@@ -20,11 +20,10 @@ export default function Avatar(props: AvatarProps) {
   const handleHidden = () => {
     setStatus(false);
   }
-  console.log(props.url)
   return (
     <div onMouseLeave={handleHidden}>
       <button className="outline-none" onClick={handleShow}>
-        <img src={props.url} width={props.size} className="rounded-full md:flex sm:block hidden mt-2" referrerPolicy="no-referrer" />
+        <img src={props.url} width={props.size} className="rounded-full sm:block mt-2" referrerPolicy="no-referrer" />
       </button>
       <div className="flex flex-col min-w-20 border-2 border-gray-200 shadow-lg z-100 bg-white min-h-5 right-0 top-13 absolute">
         {

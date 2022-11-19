@@ -17,8 +17,8 @@ export default function Header() {
 
   ]
   return (
-    <header className="z-200 fixed h-[60px] md:pl-[250px] bg-bgLogin w-full">
-      <div className="flex flex-row h-[60px] pr-3 items-center md:justify-between space-x-4 z-201  p-0">
+    <header className="z-200 sm:fixed h-[60px] sm:pl-[250px] bg-bgLogin w-full">
+      <div className="flex flex-row h-[60px] pr-3 items-center justify-between space-x-4 z-201  p-0">
         {/* <img src={logo} width="130" className="flex" /> */}
         <div></div>
         <div className="flex flex-row h-[60px] items-center">
